@@ -110,7 +110,11 @@ context. Avoids the existing entry's topic (smart speaker).
   are written only once its run completes, and the top-level agent must
   run the SELECT + re-bundle + submit. This is the known token-radar
   sequencing pattern, not a build failure.
-- Check v2 on the final commit (below) + bundle v1: (to fill after push).
+- Check v2 on commit a63dd6fd0020263cf5dc2c32ae8e5a8b34f62b9e + bundle v1:
+  13 pass / 1 fail / 5 skip / 5 at submission — SAME single FAIL:
+  thinking_priced, 0 usage rows. thinking_reproduces 37.6% (81/215),
+  everything else unchanged PASS.
+- Check v3 on the final commit (below) + bundle v1: (to fill after push).
 
 ## 7. HANDOFF — top-level agent, AFTER this builder run completes
 1. muse.db SELECT usage rows for this builder subagent
