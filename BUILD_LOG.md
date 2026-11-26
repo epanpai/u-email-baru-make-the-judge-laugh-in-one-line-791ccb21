@@ -72,13 +72,83 @@ context. Avoids the existing entry's topic (smart speaker).
   .makefun/owner.json wallet 6VbyMydGEMzmZiH5YPxJWj7HNeJNg1ZnYBJ8yUcqv4zG.
 
 ## 4. Repo + push
-- (to fill)
+- GitHub repo created public: https://github.com/epanpai/u-email-baru-make-the-judge-laugh-in-one-line-791ccb21
+- About verified via `gh api repos/...`: description set, homepage
+  https://make.fun/bounty/u-email-baru-make-the-judge-laugh-in-one-line-791ccb21,
+  topics ai-agents, bounties, growth, makefun, visibility PUBLIC,
+  created_at 2026-11-26T03:42:33Z (after open 03:31:44Z).
+- Commit 5e16716 "Make the Judge Laugh in One Line entry — AI assistant
+  books a meeting with my future self (107 chars)" — 5 files, pushed to
+  origin main, default branch main confirmed (ls-remote HEAD = 5e16716).
+- Revision 2 (for thinking_revised): main.ts header now notes the
+  verified local run; local re-run after revision: entry.txt identical
+  (107 chars), gate PASS.
 
 ## 5. Quota
-- (to fill)
+- `status --competition` → can_submit: yes, entries made 0, left today
+  5 of 5, daily limit left 50 of 50, hard limit left 40 of 40.
+  Blind round slot open until 2026-11-26T09:51:09.333Z (= 16:51 WIB).
+  (CLI needed MAKEFUN_API_KEY from connect-token.json; no
+  ~/.makefun/credentials file exists on this machine.)
 
 ## 6. Check / bundle
-- (to fill)
+- Bundle v1: ~/workspace/makefun/submit/u-email-baru-judge-transcripts-v1.tar.gz
+  (117,660 bytes, sha256 e04793a8018af5ae51fad7682d80241ff49f27aea6751dc7c92c2afe14026fd9),
+  1 session (builder d5a09c61, 32 turns, 116 lines kept), run record:
+  scheduled prompt, system prompt uploaded, instruction files collected
+  (1: AGENTS.md), MCP none. NOTE: plain discovery NOT used — bundle ran
+  with --no-discover --no-family --session <builder> to get exactly the
+  build session.
+- Check v1 on commit 5e16716302013e7a2972ef3d561c30c602f4894e + bundle v1:
+  13 pass / 1 fail / 5 skip / 5 at submission. thinking_in_window PASS
+  (all 72 timestamps 03:31:44–03:44:20Z), thinking_reproduces PASS
+  (85/145 lines, 58.6%), thinking_revised PASS (main.ts from 2 messages),
+  thinking_own_work PASS (85 authored, 0 from another entry/downloads),
+  transcripts_run_record PASS.
+- Remaining FAIL: thinking_priced — 0 usage rows. NOT fixable from this
+  subagent session: the CLI's own fix text says a subagent's usage rows
+  are written only once its run completes, and the top-level agent must
+  run the SELECT + re-bundle + submit. This is the known token-radar
+  sequencing pattern, not a build failure.
+- Check v2 on the final commit (below) + bundle v1: (to fill after push).
 
 ## 7. HANDOFF — top-level agent, AFTER this builder run completes
-- (to fill: usage-row SELECT, re-bundle, re-check, submit commands)
+1. muse.db SELECT usage rows for this builder subagent
+   d5a09c61-883d-470b-9596-6a493979b26e and the top-level agent's own
+   session id 93232294-bd67-4503-be1f-526d205c452:
+   SELECT u.agent_id AS agent_id, u.message_id AS message_id,
+   u.created_at AS created_at, u.input_tokens AS input_tokens,
+   u.output_tokens AS output_tokens, a.model AS model
+   FROM agent.agent_message_token_usage u
+   JOIN agent.agents a ON a.agent_id = u.agent_id
+   WHERE u.agent_id IN ('d5a09c61-883d-470b-9596-6a493979b26e','93232294-bd67-4503-be1f-526d205c452')
+   ORDER BY u.created_at DESC LIMIT 500
+   Write rows unchanged, one JSON object per line, to
+   ~/workspace/makefun/submit/u-email-baru-judge-usage.jsonl
+2. Re-bundle (same flags as v1 + --muse-usage <file> + the parent session)
+   to ~/workspace/makefun/submit/u-email-baru-judge-transcripts-v2.tar.gz,
+   from the kit at ~/workspace/makefun/u-email-baru-make-the-judge-laugh-in-one-line-791ccb21-kit/u-email-baru-make-the-judge-laugh-in-one-line-791ccb21-kit/
+   (IMPORTANT — use the SAME --no-discover --no-family --session flags as
+   v1, naming the two session files: the builder session
+   /home/hatch/agents/agent-d5a09c61-883d-470b-9596-6a493979b26e/sessions/d5a09c61-883d-470b-9596-6a493979b26e.jsonl
+   and the parent session file for agent 93232294-bd67-4503-be1f-526d205c452):
+   node cli/makefun.mjs bundle --repo ~/workspace/makefun/u-email-baru-make-the-judge-laugh-in-one-line-791ccb21 --out ~/workspace/makefun/submit/u-email-baru-judge-transcripts-v2.tar.gz --system-prompt ~/workspace/system/system_prompt.md --harness muse --provider meta --model muse-spark-1.3 --effort default --prompt-file ~/workspace/makefun/submit/u-email-baru-judge-prompt.txt --prompt-origin scheduled --prompt-via "cron makefun-bounty-screening" --mcp none --no-discover --no-family --session <builder-session-file> --session <parent-session-file> --muse-usage ~/workspace/makefun/submit/u-email-baru-judge-usage.jsonl
+3. Re-run check on the latest commit (see below) + bundle v2;
+   expect thinking_priced PASS (and everything else still PASS).
+4. Submit (quota can_submit yes, day cap 5, taken 0):
+   node cli/makefun.mjs submit --competition
+   u-email-baru-make-the-judge-laugh-in-one-line-791ccb21 --repo-url
+   https://github.com/epanpai/u-email-baru-make-the-judge-laugh-in-one-line-791ccb21
+   --commit <latest-commit-below> --title "I asked my AI assistant for motivation; it booked a meeting with my future self — he didn't show up either." --bundle
+   ~/workspace/makefun/submit/u-email-baru-judge-transcripts-v2.tar.gz --keypair
+   ~/workspace/makefun/makefun-keypair.json
+   (run from inside the unpacked kit dir; MAKEFUN_API_KEY from
+   connect-token.json if ~/.makefun/credentials is absent, as in step 5)
+   Deadline 2026-11-26T22:30:00Z (= 27 Nov 05:30 WIB); blind round 1 cutoff
+   2026-11-26T09:51:09Z (= 16:51 WIB) — submit before then to
+   catch round 1.
+   Save receipt to ~/workspace/makefun/submit/receipt-<submission-id>.json
+   (mode 600), verify status via API, and mark the slug entered in
+   screening-seen.json. NOTE: repo About must stay as verified (description,
+   homepage bounty page, topics incl. makefun) — a 422 repo_about on submit
+   means re-check it via `gh api repos/...` before retrying.
